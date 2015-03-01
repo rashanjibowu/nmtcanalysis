@@ -83,7 +83,7 @@ geohistory <- function(years = 2005:2011, geoType = "all", geoName = NULL) {
 	} else if(geoType == "state" || geoType == "city") {
 		c(geoName)
 	} else {
-		paste("Zip Code", geoName, sep = " ")
+		paste("Zip Code:", geoName, sep = " ")
 	}
 
 	title <- paste("Annual NMTC Investment for", geoNote, sep = " ")

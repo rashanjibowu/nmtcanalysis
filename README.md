@@ -1,5 +1,12 @@
-## Some Analytical Tools to Measure the Performance and Deployment of NMTC Funds
+## NMTC Analysis
 
-Data is sourced from the **[CDFI Fund][CDFI Fund]**
+### Analytical Tools For Data Exploration
 
-[CDFI Fund]: https://www.cdfifund.gov
+#### Purpose
+This repository holds anaytical tools to measure and explore how the New Market Tax Credit Program has deployed its funds since 2005.
+
+*Source*
+The data used in the analysis is sourced from the **[CDFI Fund][CDFI Fund]**
+
+![CDFI Fund]: cdfifund.gov/graphics/CDFIFundLogoBlue.bmp
+[CDFI Fund]: cdfifund.gov
