@@ -7,6 +7,7 @@ This repository holds anaytical tools to measure and explore how the New Market 
 
 *Source*
 The data used in the analysis is sourced from the **[CDFI Fund][CDFI Fund]**
+<<<<<<< HEAD
 ![CDFI Fund Logo](http://cdfifund.gov/graphics/CDFIFundLogoBlue.bmp )
 
 [CDFI Fund]: http://cdfifund.gov
