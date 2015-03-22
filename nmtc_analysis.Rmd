@@ -42,6 +42,98 @@ data[data$state == "Ca",]["state"] <- c("CA")
 
 ```
 
+Clean up city names
+
+```{r clean city names}
+
+data$city <- tolower(data$city)
+
+indices <- grep("chicago,", data$city)
+data[indices, c("city")] <- c("chicago")
+
+indices <- grep("cleveland|clveland,", data$city)
+data[indices, c("city")] <- c("cleveland")
+
+indices <- grep("couer dalene", data$city)
+data[indices, c("city")] <- c("couer d'alene")
+
+indices <- grep("detroit,|detriot", data$city)
+data[indices, c("city")] <- c("detroit")
+
+indices <- grep("ft.*myers", data$city)
+data[indices, c("city")] <- c("fort myers")
+
+indices <- grep("ft. worth", data$city)
+data[indices, c("city")] <- c("fort worth")
+
+indices <- grep("ft. lauderdale", data$city)
+data[indices, c("city")] <- c("fort lauderdale")
+
+indices <- grep("ft.*wayne", data$city)
+data[indices, c("city")] <- c("fort wayne")
+
+indices <- grep("gainsville", data$city)
+data[indices, c("city")] <- c("gainesville")
+
+indices <- grep("grand rapids", data$city)
+data[indices, c("city")] <- c("grand rapids")
+
+indices <- grep("hamtramck", data$city)
+data[indices, c("city")] <- c("hamtrack")
+
+indices <- grep("jacksonville", data$city)
+data[indices, c("city")] <- c("jacksonville")
+
+indices <- grep("lacross", data$city)
+data[indices, c("city")] <- c("la crosse")
+
+indices <- grep("lynwood", data$city)
+data[indices, c("city")] <- c("lynnwood")
+
+indices <- grep("mid west city", data$city)
+data[indices, c("city")] <- c("midwest city")
+
+indices <- grep("mt.*vernon", data$city)
+data[indices, c("city")] <- c("mount vernon")
+
+indices <- grep("opa-locka", data$city)
+data[indices, c("city")] <- c("opa locka")
+
+indices <- grep("philadephia", data$city)
+data[indices, c("city")] <- c("philadelphia")
+
+indices <- grep("pittsburg", data$city)
+data[indices, c("city")] <- c("pittsburgh")
+
+indices <- grep("poughkeepsie", data$city)
+data[indices, c("city")] <- c("poughkeepsie")
+
+indices <- grep("san bernardino", data$city)
+data[indices, c("city")] <- c("san bernadino")
+
+indices <- grep("san fracisco", data$city)
+data[indices, c("city")] <- c("san francisco")
+
+indices <- grep("sprinfield", data$city)
+data[indices, c("city")] <- c("springfield")
+
+indices <- grep("st.*louis", data$city)
+data[indices, c("city")] <- c("st. louis")
+
+indices <- grep("st.*paul|saint paul", data$city)
+data[indices, c("city")] <- c("st. paul")
+
+indices <- grep("st.*peter(s)?burg", data$city)
+data[indices, c("city")] <- c("st. petersburg")
+
+indices <- grep("washington", data$city)
+data[indices, c("city")] <- c("washington dc")
+
+indices <- grep("wilmington", data$city)
+data[indices, c("city")] <- c("wilmington")
+
+```
+
 Convert to data table for faster processing
 
 ```{r convert to data table}

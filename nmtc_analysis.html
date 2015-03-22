@@ -79,6 +79,92 @@ library(grid)</code></pre>
 <pre class="r"><code>colnames(data) &lt;- c(&quot;projectID&quot;, &quot;metroStatus&quot;, &quot;year&quot;, &quot;CDE&quot;, &quot;investment&quot;, &quot;projectCost&quot;, &quot;city&quot;, &quot;state&quot;, &quot;zipcode&quot;, &quot;purpose&quot;, &quot;investeeType&quot;, &quot;multiCDEStatus&quot;, &quot;multiTractStatus&quot;)</code></pre>
 <p>Clean up California data</p>
 <pre class="r"><code>data[data$state == &quot;Ca&quot;,][&quot;state&quot;] &lt;- c(&quot;CA&quot;)</code></pre>
+<p>Clean up city names</p>
+<pre class="r"><code>data$city &lt;- tolower(data$city)
+
+indices &lt;- grep(&quot;chicago,&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;chicago&quot;)
+
+indices &lt;- grep(&quot;cleveland|clveland,&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;cleveland&quot;)
+
+indices &lt;- grep(&quot;couer dalene&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;couer d'alene&quot;)
+
+indices &lt;- grep(&quot;detroit,|detriot&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;detroit&quot;)
+
+indices &lt;- grep(&quot;ft.*myers&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;fort myers&quot;)
+
+indices &lt;- grep(&quot;ft. worth&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;fort worth&quot;)
+
+indices &lt;- grep(&quot;ft. lauderdale&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;fort lauderdale&quot;)
+
+indices &lt;- grep(&quot;ft.*wayne&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;fort wayne&quot;)
+
+indices &lt;- grep(&quot;gainsville&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;gainesville&quot;)
+
+indices &lt;- grep(&quot;grand rapids&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;grand rapids&quot;)
+
+indices &lt;- grep(&quot;hamtramck&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;hamtrack&quot;)
+
+indices &lt;- grep(&quot;jacksonville&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;jacksonville&quot;)
+
+indices &lt;- grep(&quot;lacross&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;la crosse&quot;)
+
+indices &lt;- grep(&quot;lynwood&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;lynnwood&quot;)
+
+indices &lt;- grep(&quot;mid west city&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;midwest city&quot;)
+
+indices &lt;- grep(&quot;mt.*vernon&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;mount vernon&quot;)
+
+indices &lt;- grep(&quot;opa-locka&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;opa locka&quot;)
+
+indices &lt;- grep(&quot;philadephia&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;philadelphia&quot;)
+
+indices &lt;- grep(&quot;pittsburg&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;pittsburgh&quot;)
+
+indices &lt;- grep(&quot;poughkeepsie&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;poughkeepsie&quot;)
+
+indices &lt;- grep(&quot;san bernardino&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;san bernadino&quot;)
+
+indices &lt;- grep(&quot;san fracisco&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;san francisco&quot;)
+
+indices &lt;- grep(&quot;sprinfield&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;springfield&quot;)
+
+indices &lt;- grep(&quot;st.*louis&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;st. louis&quot;)
+
+indices &lt;- grep(&quot;st.*paul|saint paul&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;st. paul&quot;)
+
+indices &lt;- grep(&quot;st.*peter(s)?burg&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;st. petersburg&quot;)
+
+indices &lt;- grep(&quot;washington&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;washington dc&quot;)
+
+indices &lt;- grep(&quot;wilmington&quot;, data$city)
+data[indices, c(&quot;city&quot;)] &lt;- c(&quot;wilmington&quot;)</code></pre>
 <p>Convert to data table for faster processing</p>
 <pre class="r"><code>dt &lt;- data.table(data)</code></pre>
 <p>Add columns for analysis</p>
