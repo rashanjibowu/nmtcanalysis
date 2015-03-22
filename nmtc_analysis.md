@@ -82,9 +82,8 @@ yLabel <- c("Total Investment (millions)")
 xLabel <- c("Community Development Entity (CDE)")
 
 # Plot data
-g <- ggplot(topInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
+g <- ggplot(topInvestors, aes(y = totalInvestment / 1e+06, x = reorder(CDE, totalInvestment)))
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
-  #scale_x_discrete(limits = rev(levels("CDE"))) + 
   coord_flip() + 
   labs(title = title, x = xLabel, y = yLabel)
 ```
@@ -106,7 +105,7 @@ yLabel <- c("Total Investment (millions)")
 xLabel <- c("Community Development Entity (CDE)")
 
 # plot data
-g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
+g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, x = reorder(CDE, totalInvestment)))
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
   coord_flip() + 
   labs(title = title, x = xLabel, y = yLabel)
