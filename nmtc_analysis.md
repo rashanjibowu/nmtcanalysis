@@ -195,7 +195,7 @@ Find and plot the most active CDFIs in NY
 
 ```r
 # Filter for projects in NY only and exclude multi-CDE projects
-nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment)), by = c("CDE")]
+nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment, na.rm = TRUE)), by = c("CDE")]
 
 topNYInvestors <- nyInvestors[order(totalInvestment, decreasing = TRUE), ][1:10,]
 
@@ -307,7 +307,7 @@ Cities with the greatest investment
 
 ```r
 # form the data
-investmentByCity <- dt[,list(totalInvestment = sum(investment)), by = c("city", "state")]
+investmentByCity <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), by = c("city", "state")]
 topCities <- investmentByCity[order(totalInvestment, decreasing = TRUE),][1:10,]
 
 # Prepare plot parameters
@@ -326,3 +326,31 @@ g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) 
 ```
 
 ![](nmtc_analysis_files/figure-html/cities with greatest investment-1.png) 
+
+Most aggressive CDEs
+
+
+```r
+# form the data
+avgPortionInvestmentTotalByCDE <- dt[CDE != "Multi-CDE Project", 
+                                     list(avgPortion = mean(portionFinanced, na.rm = TRUE), 
+                                          totalInvested = sum(investment, na.rm = TRUE)), 
+                                     by = c("CDE")]
+
+# filter out minor CDEs - 50 million minimum in total investment
+# include CDEs with at least an 80% of project funding coming from NMTC
+majorAggressiveCDEs <- avgPortionInvestmentTotalByCDE[(totalInvested >= 5 * 1e+07 & avgPortion >= 0.8),]
+
+# Prepare plot parameters
+title <- c("Most Aggressive Major CDEs")
+xLabel <- c("Average Portion of Project Funding via NMTC")
+yLabel <- c("CDE")
+
+g <- ggplot(majorAggressiveCDEs, aes(x = avgPortion, y = reorder(CDE, avgPortion)))
+g + geom_point(size = 1.5) +
+  scale_x_continuous(labels = percent_format()) +
+  labs(title = title, x = xLabel, y = yLabel) +
+  theme(axis.text.y = element_text(size = 7, color = "#000000"))
+```
+
+![](nmtc_analysis_files/figure-html/CDE portion financed versus deal size-1.png) 
