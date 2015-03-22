@@ -18,7 +18,7 @@ library(ggplot2)
 
 Load the data
 
-```{r}
+```{r read in data}
 
 data <- read.csv("./data/projects.csv", na.strings = NA)
 
@@ -34,7 +34,7 @@ colnames(data) <- c("projectID", "metroStatus", "year", "CDE", "investment", "pr
 
 Clean up California data
 
-```{r}
+```{r clean california}
 
 data[data$state == "Ca",]["state"] <- c("CA")
 
@@ -42,7 +42,7 @@ data[data$state == "Ca",]["state"] <- c("CA")
 
 Convert to data table for faster processing
 
-```{r}
+```{r convert to data table}
 
 dt <- data.table(data)
 
@@ -50,7 +50,7 @@ dt <- data.table(data)
 
 Add columns for analysis
 
-```{r}
+```{r add columns}
 
 # portion financed
 dt <- dt[, portionFinanced:=investment/projectCost]
@@ -82,7 +82,7 @@ Find and plot the ten most active CDFIs overall
 
 ```{r most active CDFIs}
 
-totalInvestedByCDE <- dt[,list(totalInvestment = sum(investment)), by = c("CDE")]
+totalInvestedByCDE <- suppressWarnings(dt[,list(totalInvestment = sum(investment)), by = c("CDE")])
 
 # Exclude the Multi-CDE Projects
 topInvestors <- totalInvestedByCDE[order(totalInvestment, decreasing = TRUE),][2:11]
@@ -108,13 +108,15 @@ Find and plot the most active CDFIs in NY
 # Filter for projects in NY only and exclude multi-CDE projects
 nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment)), by = c("CDE")]
 
+topNYInvestors <- nyInvestors[order(totalInvestment, decreasing = TRUE), ][1:10,]
+
 # prepare plot parameters
 title <- c("10 Most Active CDEs in NY")
 yLabel <- c("Total Investment (millions)")
 xLabel <- c("Community Development Entity (CDE)")
 
 # plot data
-g <- ggplot(nyInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
+g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
   coord_flip() + 
   labs(title = title, x = xLabel, y = yLabel)

@@ -71,16 +71,8 @@ Find and plot the ten most active CDFIs overall
 
 
 ```r
-totalInvestedByCDE <- dt[,list(totalInvestment = sum(investment)), by = c("CDE")]
-```
+totalInvestedByCDE <- suppressWarnings(dt[,list(totalInvestment = sum(investment)), by = c("CDE")])
 
-```
-## Warning in gsum(investment): Group 3 summed to more than type 'integer'
-## can hold so the result has been coerced to 'numeric' automatically, for
-## convenience.
-```
-
-```r
 # Exclude the Multi-CDE Projects
 topInvestors <- totalInvestedByCDE[order(totalInvestment, decreasing = TRUE),][2:11]
 
@@ -106,13 +98,15 @@ Find and plot the most active CDFIs in NY
 # Filter for projects in NY only and exclude multi-CDE projects
 nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment)), by = c("CDE")]
 
+topNYInvestors <- nyInvestors[order(totalInvestment, decreasing = TRUE), ][1:10,]
+
 # prepare plot parameters
 title <- c("10 Most Active CDEs in NY")
 yLabel <- c("Total Investment (millions)")
 xLabel <- c("Community Development Entity (CDE)")
 
 # plot data
-g <- ggplot(nyInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
+g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
   coord_flip() + 
   labs(title = title, x = xLabel, y = yLabel)
