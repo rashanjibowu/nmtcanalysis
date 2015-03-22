@@ -32,6 +32,14 @@ colnames(data) <- c("projectID", "metroStatus", "year", "CDE", "investment", "pr
 
 ```
 
+Clean up California data
+
+```{r}
+
+data[data$state == "Ca",]["state"] <- c("CA")
+
+```
+
 Convert to data table for faster processing
 
 ```{r}
@@ -40,7 +48,37 @@ dt <- data.table(data)
 
 ```
 
-Find the ten most active CDFIs overall
+Add columns for analysis
+
+```{r}
+
+# portion financed
+dt <- dt[, portionFinanced:=investment/projectCost]
+
+# consolidate purpose categories
+dt <- dt[, purposeCategory:=purpose]
+
+indicies <- grep("Business Financing|Microenterprise", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Business")
+
+indicies <- grep("Multi Family", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Real Estate -- Multi-Family")
+
+indicies <- grep("Single Family", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Real Estate -- Single-Family")
+
+indicies <- grep("Commercial", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Real Estate -- Commercial")
+
+indicies <- grep("Other", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Other")
+
+# convert to a factor
+dt$purposeCategory <- as.factor(dt$purposeCategory)
+
+```
+
+Find and plot the ten most active CDFIs overall
 
 ```{r most active CDFIs}
 
@@ -63,3 +101,66 @@ g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) 
 
 ```
 
+Find and plot the most active CDFIs in NY
+
+```{r most active in NY}
+
+# Filter for projects in NY only and exclude multi-CDE projects
+nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment)), by = c("CDE")]
+
+# prepare plot parameters
+title <- c("10 Most Active CDEs in NY")
+yLabel <- c("Total Investment (millions)")
+xLabel <- c("Community Development Entity (CDE)")
+
+# plot data
+g <- ggplot(nyInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
+g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
+  coord_flip() + 
+  labs(title = title, x = xLabel, y = yLabel)
+
+```
+
+Find and plot average capital deployed per state
+
+```{r avg deployed per state}
+
+title <- c("Average Invested in Each State")
+yLabel <- c("Average Invested (millions)")
+xLabel <- c("State")
+
+avgPerState <- dt[,list(avgInvested = mean(investment, na.rm = TRUE)), by = c("state")]
+
+g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = state))
+g + geom_point() + labs(title = title, y = xLabel, x = yLabel)
+
+```
+
+Find average portion of projects financed with NMTC dollars
+
+```{r avg portion of project financed}
+
+# average portion funded by state
+dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("state")]
+
+```
+
+Find average portion financed over time
+
+```{r avg portion financed over time}
+
+# average funded over time
+avgPortionByYear <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year")]
+
+ g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
+ g + geom_line()
+
+```
+
+Find average portion of projects funded by purpose
+
+```{r avg portion financed by purpose}
+
+dt[,list(avgPortion = mean(portionFinanced, na.rm = TRUE)), by = c("purposeCategory")]
+
+```

@@ -1,0 +1,171 @@
+0+9
+seq(9, 90, 3)
+getwd()
+install.packages(c("knitr", "ggplot", "lattice"))
+install.packages(c("knitr", "ggplot2", "lattice", "data.table", "plyr", "dplyr", "swirl"))
+install.packages(c("KernSmooth", "quantmod", "markdown"))
+?data.table
+??data.table
+library(data.table)
+?data.table
+exi
+exit
+exit()
+q()
+?data.table
+library(data.table)
+library(markdown)
+installed.packages()
+pwd
+getwd()
+setwd("/Users/rjibowu/Documents/Dropbox/dev_projects/r_projects/nmtc")
+getwd()
+data <- read.csv("./data/projects.csv", na.strings = NA)
+colnames(data) <- c("projectID", "metroStatus", "year", "CDE", "investment", "projectCost", "city", "state", "zipcode", "purpose", "investeeType", "multiCDEStatus", "multiTractStatus")
+dt <- data.table(data)
+dt
+dt[state == "NY",]
+dt[state == "NY", list(totalInvestment = sum(investment)), by = c("CDE")]
+dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment)), by = c("CDE")]
+topNYInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment)), by = c("CDE")]
+topNYInvestors[order(totalInvestment, decreasing = TRUE),]
+g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, CDE))
+library(ggplot2)
+g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, CDE))
+g + geom_point()
+g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, x = CDE))
+g + geom_point()
+g <- ggplot(topNYInvestors[1:10,], aes(y = totalInvestment / 1e+06, x = CDE))
+g + geom_point()
+g + geom_bar(stat = "identity")
+g + geom_bar(stat = "identity") + coords_flip()
+g + geom_bar(stat = "identity") + coord_flip()
+avgPerState <- dt[,list(avgInvested = mean(investment, na.rm = TRUE)), by = c("state")]
+g <- ggplot(avgPerState, aes(x = avgInvested, y = state))
+g + geom_point()
+g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = state))
+g + geom_point()
+?cex
+??cex
+par(cex)
+cex()
+?par
+par(cex.axis = 0.5)
+g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = state))
+g + geom_point()
+par(cex.axis = 0.3)
+g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = state))
+g + geom_point()
+par(cex = 0.3)
+g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = state))
+g + geom_point()
+par("cex")
+par("cex.axis")
+par("cex.main")
+par("cex.ub")
+par("cex.sub")
+??ggplot
+?ggplot
+names(dt)
+dt[, portionFinanced:=investment/projectCost]
+str(dt)
+dt[CDE != "Multi-CDE Project",list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE))
+)
+dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE))]
+dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("state")]
+g <- ggplot(dt, aes(state, portionFinanced))
+g + geam_point()
+g + geom_point()
+dt[state == ""]
+dt[state == "",]
+dt[state == "",]
+table(dt$state)
+data$state
+data$state[CA]
+data$state["CA"]
+data$state["Ca"]
+data$state[state == "Ca"]
+dim(data$state)
+length(data$state)
+data[data$state == "Ca",]
+data[data$state == "Ca",][state]
+data[data$state == "Ca",]["state"]
+data[data$state == "Ca",]["state"] <- c("CA")
+dt <- data.table(data)
+str(dt)
+table(dt$state)
+dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year")]
+dt[, portionFinanced:=investment/projectCost]
+dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year")]
+avgPortionByYear <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year")]
+avgPortionByYear[order(year),]
+qplot(avgPortionByYear)
+qplot(avgPortionByYear, year, avgPortionFinanced)
+qplot(avgPortionByYear, x = year, y = avgPortionFinanced)
+g <- ggplot(avgPortFinanced, aes(x = year, y = avgPortionFinanced))
+g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
+g + geom_point()
+g + geom_line()
+names(dt)
+table(dt$purpose)
+grep("Business Financing | Microenterprise", dt$purpose)
+grep("Business Financing|Microenterprise", dt$purpose)
+table(dt$purpose)
+grep("Multi Family", dt$purpose)
+length(grep("Multi Family", dt$purpose))
+grep("Single Family", dt$purpose)
+grep("Commercial", dt$purpose)
+lengthgrep("Commercial", dt$purpose))
+length(grep("Commercial", dt$purpose))
+table(dt$purpose)
+dt[, purposeCategory:=purpose]
+indicies <- grep("Business Financing|Microenterprise", dt$purpose)
+dt[indicies, purposeCategory] <- c("Business")
+dt[indicies, purposeCategory]
+dt[, purposeCategory:=as.character(purpose)]
+dt[indicies, purposeCategory] <- c("Business")
+dt[indicies, purposeCategory]
+dt[indicies, purposeCategory] <- c("Business")
+dt[dt$indicies, dt$purposeCategory] <- c("Business")
+table(dt$purposeCategory)
+str(dt)
+dt[dt$indicies, dt$purposeCategory] <- c("Business")
+str(dt)
+indicies <- grep("Business Financing|Microenterprise", dt$purpose)
+dt[indicies, purposeCategory] <- c("Business")
+dt[indicies, "purposeCategory"] <- c("Business")
+str(dt)
+dt[indicies, {"purposeCategory"}] <- c("Business")
+str(dt)
+table(dt$purposeCategory)
+indicies <- grep("Multi Family", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Real Estate -- Multi-Family")
+table(dt$purposeCategory)
+indicies <- grep("Single Family", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Real Estate -- Single-Family")
+table(dt$purposeCategory)
+indicies <- grep("Commercial", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Real Estate -- Commercial")
+table(dt$purposeCategory)
+indicies <- grep("Other", dt$purpose)
+dt[indicies, "purposeCategory"] <- c("Other")
+table(dt$purposeCategory)
+str(dt)
+g <- ggplot(dt, aes(mean(portionFinanced, na.rm = TRUE))
+)
+g + geom_point()
+dt$purposeCategory <- as.factor(dt$purposeCategory)
+dt$purposeCategory
+dt[,list(avgPortion = mean(portionFinanced, na.rm = TRUE)), by = c("purposeCategory")]
+dt[,list(avgPortion = mean(portionFinanced, na.rm = TRUE)), by = c("purposeCategory", "year")]
+avgPortionByYearPurpose <- dt[,list(avgPortion = mean(portionFinanced, na.rm = TRUE)), by = c("purposeCategory", "year")]
+g <- ggplot(avgPortionByYearPurpose, aes(x = year, y = avgPortion))
+g + geom_line()
+g + geom_point()
+g + facet_wrap(.~purposeCategory)
+g + facet_wrap(.~purposeCategory) + geom_line()
+g + facet_wrap(avgPortion.~purposeCategory) + geom_line()
+g + facet_wrap(avgPortion ~ purposeCategory) + geom_line()
+exit
+exit()
+q()
