@@ -8,6 +8,7 @@ Load necessary libraries
 ```r
 library(data.table)
 library(ggplot2)
+library(scales)
 ```
 
 Load the data
@@ -117,14 +118,15 @@ Find and plot average capital deployed per state
 
 
 ```r
-title <- c("Average Invested in Each State")
-yLabel <- c("Average Invested (millions)")
+title <- c("Average Invested Per Deal in Each State")
+yLabel <- c("Average Invested Per Deal (millions)")
 xLabel <- c("State")
 
 avgPerState <- dt[,list(avgInvested = mean(investment, na.rm = TRUE)), by = c("state")]
 
-g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = state))
-g + geom_point() + labs(title = title, y = xLabel, x = yLabel)
+g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = reorder(state, avgInvested)))
+g + geom_point() + labs(title = title, y = xLabel, x = yLabel) +
+  theme(axis.text.y = element_text(size = 6, color = "#000000"))
 ```
 
 ![](nmtc_analysis_files/figure-html/avg deployed per state-1.png) 
@@ -133,67 +135,21 @@ Find average portion of projects financed with NMTC dollars
 
 
 ```r
+title <- c("Average Portion Financed By State")
+yLabel <- c("Average Portion Financed with NMTC Funding")
+xLabel <- c("State")
+
 # average portion funded by state
-dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("state")]
+avgPortionByState <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("state")]
+
+g <- ggplot(avgPortionByState, aes(x = avgPortionFinanced, y = reorder(state, avgPortionFinanced)))
+g + geom_point() +
+  scale_x_continuous(labels = percent_format()) +
+  labs(title = title, y = xLabel, x = yLabel) +
+  theme(axis.text.y = element_text(size = 6, color = "#000000"))
 ```
 
-```
-##     state avgPortionFinanced
-##  1:    AK          0.7741083
-##  2:    AL          0.6498661
-##  3:    AR          0.7447590
-##  4:    AZ          0.6762752
-##  5:    CA          0.6711710
-##  6:    OR          0.7285715
-##  7:    MO          0.7377126
-##  8:    CO          0.5769954
-##  9:    CT          0.5313686
-## 10:    DC          0.5962674
-## 11:    DE          0.5718474
-## 12:    FL          0.7151591
-## 13:    GA          0.7395792
-## 14:    MI          0.6901640
-## 15:    HI          0.7493190
-## 16:    IA          0.7695285
-## 17:    ID          0.7557281
-## 18:    IL          0.7163122
-## 19:    IN          0.8497260
-## 20:    KS          0.6704718
-## 21:    KY          0.8512035
-## 22:    LA          0.8037562
-## 23:    MA          0.7729559
-## 24:    MD          0.6753684
-## 25:    ME          0.7493029
-## 26:    NJ          0.6734355
-## 27:    MN          0.6883381
-## 28:    MS          0.7976924
-## 29:    MT          0.8929470
-## 30:    NC          0.6252611
-## 31:    ND          0.7696307
-## 32:    NE          0.5396387
-## 33:    NH          0.6573557
-## 34:    SC          0.6923587
-## 35:    NY          0.6844477
-## 36:    NM          0.5868434
-## 37:    NV          0.6776512
-## 38:    OH          0.7517621
-## 39:    OK          0.8011458
-## 40:    PA          0.7108533
-## 41:    TX          0.7068748
-## 42:    PR          0.5403873
-## 43:    RI          0.6214800
-## 44:    SD          0.7096686
-## 45:    TN          0.7944558
-## 46:    UT          0.7165560
-## 47:    VA          0.7367967
-## 48:    WV          0.7562862
-## 49:                0.9462652
-## 50:    VT          0.8471183
-## 51:    WA          0.6970885
-## 52:    WI          0.6424956
-## 53:    WY          0.5973331
-##     state avgPortionFinanced
-```
+![](nmtc_analysis_files/figure-html/avg portion of project financed-1.png) 
 
 Find average portion financed over time
 
@@ -208,7 +164,7 @@ avgPortionByYear <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mea
 
 ![](nmtc_analysis_files/figure-html/avg portion financed over time-1.png) 
 
-Find average portion of projects funded by purpose
+`tion of projects funded by purpose
 
 
 ```r
