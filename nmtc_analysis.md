@@ -255,9 +255,12 @@ xLabel <- c("Average Portion Financed with NMTC Funding")
 yLabel <- c("State")
 
 # average portion funded by state
-avgPortionByState <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("state")]
+avgPortionByState <- dt[CDE != "Multi-CDE Project", 
+                        list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), 
+                        by = c("state")]
 
 g <- ggplot(avgPortionByState, aes(x = avgPortionFinanced, y = reorder(state, avgPortionFinanced)))
+
 g + geom_point() +
   scale_x_continuous(labels = percent_format()) +
   labs(title = title, y = yLabel, x = xLabel) +

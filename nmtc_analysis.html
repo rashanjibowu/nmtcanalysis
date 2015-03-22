@@ -265,9 +265,12 @@ xLabel &lt;- c(&quot;Average Portion Financed with NMTC Funding&quot;)
 yLabel &lt;- c(&quot;State&quot;)
 
 # average portion funded by state
-avgPortionByState &lt;- dt[CDE != &quot;Multi-CDE Project&quot;, list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c(&quot;state&quot;)]
+avgPortionByState &lt;- dt[CDE != &quot;Multi-CDE Project&quot;, 
+                        list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), 
+                        by = c(&quot;state&quot;)]
 
 g &lt;- ggplot(avgPortionByState, aes(x = avgPortionFinanced, y = reorder(state, avgPortionFinanced)))
+
 g + geom_point() +
   scale_x_continuous(labels = percent_format()) +
   labs(title = title, y = yLabel, x = xLabel) +
