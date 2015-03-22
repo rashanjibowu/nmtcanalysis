@@ -129,6 +129,9 @@ indices <- grep("^(bronx|brooklyn)$", data$city)
 data[indices, c("city")] <- c("new york")
 
 data[(data$city == "manhattan" & data$state == "NY"), c("city")] <- c("new york")
+
+# merge factors
+data$city <- as.factor(data$city)
 ```
 
 Convert to data table for faster processing
@@ -171,7 +174,9 @@ Find and plot the ten most active CDFIs overall
 
 
 ```r
-totalInvestedByCDE <- suppressWarnings(dt[,list(totalInvestment = sum(investment)), by = c("CDE")])
+totalInvestedByCDE <- suppressWarnings(dt[, 
+                                          list(totalInvestment = sum(investment)), 
+                                          by = c("CDE")])
 
 # Exclude the Multi-CDE Projects
 topInvestors <- totalInvestedByCDE[order(totalInvestment, decreasing = TRUE),][2:11]
@@ -182,7 +187,9 @@ yLabel <- c("Total Investment (millions)")
 xLabel <- c("Community Development Entity (CDE)")
 
 # Plot data
-g <- ggplot(topInvestors, aes(y = totalInvestment / 1e+06, x = reorder(CDE, totalInvestment)))
+g <- ggplot(topInvestors, 
+            aes(y = totalInvestment / 1e+06, x = reorder(CDE, totalInvestment)))
+
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
   coord_flip() + 
   labs(title = title, x = xLabel, y = yLabel)
@@ -195,7 +202,9 @@ Find and plot the most active CDFIs in NY
 
 ```r
 # Filter for projects in NY only and exclude multi-CDE projects
-nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), list(totalInvestment = sum(investment, na.rm = TRUE)), by = c("CDE")]
+nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), 
+                  list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                  by = c("CDE")]
 
 topNYInvestors <- nyInvestors[order(totalInvestment, decreasing = TRUE), ][1:10,]
 
@@ -205,7 +214,9 @@ yLabel <- c("Total Investment (millions)")
 xLabel <- c("Community Development Entity (CDE)")
 
 # plot data
-g <- ggplot(topNYInvestors, aes(y = totalInvestment / 1e+06, x = reorder(CDE, totalInvestment)))
+g <- ggplot(topNYInvestors, 
+            aes(y = totalInvestment / 1e+06, x = reorder(CDE, totalInvestment)))
+
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) + 
   coord_flip() + 
   labs(title = title, x = xLabel, y = yLabel)
@@ -221,9 +232,13 @@ title <- c("Average Invested Per Deal in Each State")
 xLabel <- c("Average Invested Per Deal (millions)")
 yLabel <- c("State")
 
-avgPerState <- dt[,list(avgInvested = mean(investment, na.rm = TRUE)), by = c("state")]
+avgPerState <- dt[, 
+                  list(avgInvested = mean(investment, na.rm = TRUE)), 
+                  by = c("state")]
 
-g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = reorder(state, avgInvested)))
+g <- ggplot(avgPerState, 
+            aes(x = avgInvested / 1e+06, y = reorder(state, avgInvested)))
+
 g + geom_point() + 
   labs(title = title, y = yLabel, x = xLabel) +
   theme(axis.text.y = element_text(size = 6, color = "#000000"))
@@ -261,7 +276,9 @@ yLabel <- c("Average Portion Financed with NMTC Funding")
 xLabel <- c("Year")
 
 # average funded over time
-avgPortionByYear <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year", "purposeCategory")]
+avgPortionByYear <- dt[CDE != "Multi-CDE Project", 
+                       list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)),
+                       by = c("year", "purposeCategory")]
 
 # Make the plot
 g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
@@ -290,7 +307,9 @@ xLabel <- c("Portion Financed")
 yAxisLabels <- c("$1,000", "$10,000", "$100,000", "$1 million", "$10 million", "$100 million", "$1 billion")
 
 # make plot
-g <- ggplot(dt, aes(x = portionFinanced, y = investment, color = multiCDEStatus))
+g <- ggplot(dt, 
+            aes(x = portionFinanced, y = investment, color = multiCDEStatus))
+
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
   geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
@@ -307,7 +326,10 @@ Cities with the greatest investment
 
 ```r
 # form the data
-investmentByCity <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), by = c("city", "state")]
+investmentByCity <- dt[,
+                       list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                       by = c("city", "state")]
+
 topCities <- investmentByCity[order(totalInvestment, decreasing = TRUE),][1:10,]
 
 # Prepare plot parameters
@@ -317,8 +339,8 @@ xLabel <- c("City")
 
 # make plot
 g <- ggplot(topCities, aes(x = reorder(city, -totalInvestment), 
-                           y = totalInvestment / 1e+06)                           
-            )
+                           y = totalInvestment / 1e+06))
+
 g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = title, x = xLabel, y = yLabel) +
@@ -332,21 +354,23 @@ Most aggressive CDEs
 
 ```r
 # form the data
-avgPortionInvestmentTotalByCDE <- dt[CDE != "Multi-CDE Project", 
-                                     list(avgPortion = mean(portionFinanced, na.rm = TRUE), 
-                                          totalInvested = sum(investment, na.rm = TRUE)), 
-                                     by = c("CDE")]
+avgPortionTotalByCDE <- dt[CDE != "Multi-CDE Project", 
+                           list(avgPortion = mean(portionFinanced, na.rm = TRUE), 
+                                totalInvested = sum(investment, na.rm = TRUE)), 
+                           by = c("CDE")]
 
 # filter out minor CDEs - 50 million minimum in total investment
 # include CDEs with at least an 80% of project funding coming from NMTC
-majorAggressiveCDEs <- avgPortionInvestmentTotalByCDE[(totalInvested >= 5 * 1e+07 & avgPortion >= 0.8),]
+majorAggressiveCDEs <- avgPortionTotalByCDE[(totalInvested >= 5 * 1e+07 & avgPortion >= 0.8),]
 
 # Prepare plot parameters
 title <- c("Most Aggressive Major CDEs")
 xLabel <- c("Average Portion of Project Funding via NMTC")
 yLabel <- c("CDE")
 
-g <- ggplot(majorAggressiveCDEs, aes(x = avgPortion, y = reorder(CDE, avgPortion)))
+g <- ggplot(majorAggressiveCDEs, 
+            aes(x = avgPortion, y = reorder(CDE, avgPortion)))
+
 g + geom_point(size = 1.5) +
   scale_x_continuous(labels = percent_format()) +
   labs(title = title, x = xLabel, y = yLabel) +
