@@ -122,6 +122,13 @@ data[indices, c("city")] <- c("washington dc")
 
 indices <- grep("wilmington", data$city)
 data[indices, c("city")] <- c("wilmington")
+
+# merge boroughs of NY
+
+indices <- grep("^(bronx|brooklyn)$", data$city)
+data[indices, c("city")] <- c("new york")
+
+data[(data$city == "manhattan" & data$state == "NY"), c("city")] <- c("new york")
 ```
 
 Convert to data table for faster processing
@@ -294,3 +301,28 @@ g + geom_point(alpha = 0.4, size = 1) +
 ```
 
 ![](nmtc_analysis_files/figure-html/deal size vs portion financed-1.png) 
+
+Cities with the greatest investment
+
+
+```r
+# form the data
+investmentByCity <- dt[,list(totalInvestment = sum(investment)), by = c("city", "state")]
+topCities <- investmentByCity[order(totalInvestment, decreasing = TRUE),][1:10,]
+
+# Prepare plot parameters
+title <- c("Cities Most Invested In")
+yLabel <- c("Total NMTC Investment (millions)")
+xLabel <- c("City")
+
+# make plot
+g <- ggplot(topCities, aes(x = reorder(city, -totalInvestment), 
+                           y = totalInvestment / 1e+06)                           
+            )
+g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = title, x = xLabel, y = yLabel) +
+  scale_x_discrete(labels = toupper(topCities$city))
+```
+
+![](nmtc_analysis_files/figure-html/cities with greatest investment-1.png) 
