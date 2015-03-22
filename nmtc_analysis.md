@@ -9,6 +9,7 @@ Load necessary libraries
 library(data.table)
 library(ggplot2)
 library(scales)
+library(grid)
 ```
 
 Load the data
@@ -53,13 +54,13 @@ indicies <- grep("Business Financing|Microenterprise", dt$purpose)
 dt[indicies, "purposeCategory"] <- c("Business")
 
 indicies <- grep("Multi Family", dt$purpose)
-dt[indicies, "purposeCategory"] <- c("Real Estate -- Multi-Family")
+dt[indicies, "purposeCategory"] <- c("Multi-family")
 
 indicies <- grep("Single Family", dt$purpose)
-dt[indicies, "purposeCategory"] <- c("Real Estate -- Single-Family")
+dt[indicies, "purposeCategory"] <- c("Single-family")
 
 indicies <- grep("Commercial", dt$purpose)
-dt[indicies, "purposeCategory"] <- c("Real Estate -- Commercial")
+dt[indicies, "purposeCategory"] <- c("Com. RE")
 
 indicies <- grep("Other", dt$purpose)
 dt[indicies, "purposeCategory"] <- c("Other")
@@ -119,13 +120,14 @@ Find and plot average capital deployed per state
 
 ```r
 title <- c("Average Invested Per Deal in Each State")
-yLabel <- c("Average Invested Per Deal (millions)")
-xLabel <- c("State")
+xLabel <- c("Average Invested Per Deal (millions)")
+yLabel <- c("State")
 
 avgPerState <- dt[,list(avgInvested = mean(investment, na.rm = TRUE)), by = c("state")]
 
 g <- ggplot(avgPerState, aes(x = avgInvested / 1e+06, y = reorder(state, avgInvested)))
-g + geom_point() + labs(title = title, y = xLabel, x = yLabel) +
+g + geom_point() + 
+  labs(title = title, y = yLabel, x = xLabel) +
   theme(axis.text.y = element_text(size = 6, color = "#000000"))
 ```
 
@@ -136,8 +138,8 @@ Find average portion of projects financed with NMTC dollars
 
 ```r
 title <- c("Average Portion Financed By State")
-yLabel <- c("Average Portion Financed with NMTC Funding")
-xLabel <- c("State")
+xLabel <- c("Average Portion Financed with NMTC Funding")
+yLabel <- c("State")
 
 # average portion funded by state
 avgPortionByState <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("state")]
@@ -145,37 +147,34 @@ avgPortionByState <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = me
 g <- ggplot(avgPortionByState, aes(x = avgPortionFinanced, y = reorder(state, avgPortionFinanced)))
 g + geom_point() +
   scale_x_continuous(labels = percent_format()) +
-  labs(title = title, y = xLabel, x = yLabel) +
+  labs(title = title, y = yLabel, x = xLabel) +
   theme(axis.text.y = element_text(size = 6, color = "#000000"))
 ```
 
 ![](nmtc_analysis_files/figure-html/avg portion of project financed-1.png) 
 
-Find average portion financed over time
+Plot the average portion financed over time by purpose
 
 
 ```r
-# average funded over time
-avgPortionByYear <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year")]
+# Prepare plot parameters
+title <- c("Average Portion Financed By Year and Purpose")
+yLabel <- c("Average Portion Financed with NMTC Funding")
+xLabel <- c("Year")
 
- g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
- g + geom_line()
+# average funded over time
+avgPortionByYear <- dt[CDE != "Multi-CDE Project", list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)), by = c("year", "purposeCategory")]
+
+# Make the plot
+g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
+g + geom_line() +
+  facet_grid(purposeCategory~.) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_x_continuous(breaks = unique(avgPortionByYear$year)) +
+  labs(title = title, x = xLabel, y = yLabel) +
+  theme(axis.text.y = element_text(size = 8, color = "#000000"),
+        strip.text.y = element_text(size = 6.5),
+        panel.margin = unit(1, "lines"))
 ```
 
 ![](nmtc_analysis_files/figure-html/avg portion financed over time-1.png) 
-
-`tion of projects funded by purpose
-
-
-```r
-dt[,list(avgPortion = mean(portionFinanced, na.rm = TRUE)), by = c("purposeCategory")]
-```
-
-```
-##                 purposeCategory avgPortion
-## 1:                     Business  0.7422870
-## 2:    Real Estate -- Commercial  0.6909290
-## 3: Real Estate -- Single-Family  0.6395683
-## 4:                        Other  0.8923109
-## 5:  Real Estate -- Multi-Family  0.6534208
-```
