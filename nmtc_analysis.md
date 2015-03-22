@@ -174,7 +174,32 @@ g + geom_line() +
   labs(title = title, x = xLabel, y = yLabel) +
   theme(axis.text.y = element_text(size = 8, color = "#000000"),
         strip.text.y = element_text(size = 6.5),
-        panel.margin = unit(1, "lines"))
+        panel.margin = unit(0.5, "lines"))
 ```
 
 ![](nmtc_analysis_files/figure-html/avg portion financed over time-1.png) 
+
+Plot deal size against portion financed
+
+
+```r
+# Prepare plot parameters
+title <- c("Investment Size vs. Portion Financed By Multi-CDE Status")
+yLabel <- c("NMTC Investment Size")
+xLabel <- c("Portion Financed")
+
+# special labels for log transformation of y axis
+yAxisLabels <- c("$1,000", "$10,000", "$100,000", "$1 million", "$10 million", "$100 million", "$1 billion")
+
+# make plot
+g <- ggplot(dt, aes(x = portionFinanced, y = investment, color = multiCDEStatus))
+g + geom_point(alpha = 0.4, size = 1) +   
+  scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
+  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  labs(title = title, x = xLabel, y = yLabel) +
+  scale_x_continuous(labels = percent_format()) +
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = yAxisLabels)
+```
+
+![](nmtc_analysis_files/figure-html/deal size vs portion financed-1.png) 
