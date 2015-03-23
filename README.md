@@ -9,6 +9,9 @@ This repository holds code, tools, and analysis to measure and explore how the N
 5. Which CDFIs were most active in deploying capital?
 6. Which CDFIs were most effective in deploying capital?
 
+### Analysis
+
+Check out the [latest analysis here]("nmtc_analysis.md").
 
 ### Data Sources
 
