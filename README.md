@@ -11,7 +11,7 @@ This repository holds code, tools, and analysis to measure and explore how the N
 
 ### Analysis
 
-Check out the [latest analysis here]("nmtc_analysis.md").
+Check out the [latest analysis here](nmtc_analysis.md).
 
 ### Data Sources
 
