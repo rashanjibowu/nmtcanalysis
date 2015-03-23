@@ -74,7 +74,17 @@ library(ggplot2)
 library(scales)
 library(grid)</code></pre>
 <p>Load the data</p>
-<pre class="r"><code>data &lt;- read.csv(&quot;./data/projects.csv&quot;, na.strings = NA)</code></pre>
+<pre class="r"><code>data &lt;- read.csv(&quot;./data/projects.csv&quot;, na.strings = NA)
+
+downloadData &lt;- c(FALSE)
+
+# download historical data: 1996 - 2004
+if (downloadData) {
+  url &lt;- c(&quot;http://www2.census.gov/acs/downloads/Core_Tables/1996/ACS_1996_G90_050_20050303_093024.csv&quot;)
+  download.file(url, destfile = &quot;./data/first1996.csv&quot;, method = &quot;curl&quot;)
+  old &lt;- read.csv(&quot;./data/first1996.csv&quot;, na.strings = NA)
+  head(old)
+}</code></pre>
 <p>Clean up column names</p>
 <pre class="r"><code>colnames(data) &lt;- c(&quot;projectID&quot;, &quot;metroStatus&quot;, &quot;year&quot;, &quot;CDE&quot;, &quot;investment&quot;, &quot;projectCost&quot;, &quot;city&quot;, &quot;state&quot;, &quot;zipcode&quot;, &quot;purpose&quot;, &quot;investeeType&quot;, &quot;multiCDEStatus&quot;, &quot;multiTractStatus&quot;)</code></pre>
 <p>Clean up California data</p>

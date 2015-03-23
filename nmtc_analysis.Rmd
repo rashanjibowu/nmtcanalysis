@@ -24,6 +24,16 @@ Load the data
 
 data <- read.csv("./data/projects.csv", na.strings = NA)
 
+downloadData <- c(FALSE)
+
+# download historical data: 1996 - 2004
+if (downloadData) {
+  url <- c("http://www2.census.gov/acs/downloads/Core_Tables/1996/ACS_1996_G90_050_20050303_093024.csv")
+  download.file(url, destfile = "./data/first1996.csv", method = "curl")
+  old <- read.csv("./data/first1996.csv", na.strings = NA)
+  head(old)
+}
+
 ```
 
 Clean up column names
