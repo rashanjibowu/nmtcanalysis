@@ -391,3 +391,30 @@ g + geom_point(size = 1.5) +
 ```
 
 ![](nmtc_analysis_files/figure-html/CDE portion financed versus deal size-1.png) 
+
+Show distribution of investment size and portion financed by recipient
+
+
+```r
+# Prepare plot parameters
+title <- c("Investment Size vs. Portion Financed By Recipient")
+yLabel <- c("NMTC Investment Size")
+xLabel <- c("Portion Financed")
+
+# special labels for log transformation of y axis
+yAxisLabels <- c("$1,000", "$10,000", "$100,000", "$1 million", "$10 million", "$100 million", "$1 billion")
+
+# make plot - #filter out blank investeeTypes
+g <- ggplot(dt[investeeType != "",], 
+            aes(x = portionFinanced, y = investment, color = investeeType))
+
+g + geom_point(alpha = 0.4, size = 1) +   
+  scale_color_brewer(type = "qual", palette = 6, name = "Recipient") +
+  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  labs(title = title, x = xLabel, y = yLabel) +
+  scale_x_continuous(labels = percent_format()) +
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = yAxisLabels)
+```
+
+![](nmtc_analysis_files/figure-html/investigate investee types-1.png) 
