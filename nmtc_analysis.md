@@ -1,6 +1,6 @@
 # Analysis of the New Markets Tax Credit Program
 Rashan Jibowu  
-03/20/2015  
+03/24/2015  
 
 Load necessary libraries
 
@@ -340,6 +340,27 @@ g + geom_point(alpha = 0.4, size = 1) +
 ```
 
 ![](nmtc_analysis_files/figure-html/deal size vs portion financed-1.png) 
+
+Separate plot into facets for clarity
+
+
+```r
+# make plot
+g <- ggplot(dt, 
+            aes(x = portionFinanced, y = investment, color = multiCDEStatus))
+
+g + geom_point(alpha = 0.4, size = 1) +   
+  scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
+  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  labs(title = title, x = xLabel, y = yLabel) +
+  scale_x_continuous(labels = percent_format()) +
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = yAxisLabels) +
+  facet_grid(.~multiCDEStatus) + 
+  theme(legend.position = "none")
+```
+
+![](nmtc_analysis_files/figure-html/faceted deal size vs portion financed-1.png) 
 
 Cities with the greatest investment
 
