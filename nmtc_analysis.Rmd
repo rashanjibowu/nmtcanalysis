@@ -57,6 +57,7 @@ Convert certain variables into factors
 ```{r factorize certain variables}
 
 data$investeeType <- as.factor(data$investeeType)
+#data$year <- as.factor(data$year)
 
 ```
 
@@ -429,6 +430,44 @@ g + geom_bar(stat = "identity", color = "white", fill = "#003366", width = 0.8) 
   scale_x_discrete(labels = toupper(topCities$city))
 
 ```
+
+Zipcodes in NY - investment history
+
+```{r investment history of NY zipcodes}
+
+# form data
+nyZipCodeInvestment <- dt[(city == c("new york")), 
+                          list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                          by = c("zipcode","year")]
+
+# Prepare plot parameters
+title <- c("NMTC Investment History in Zip Codes in New York City")
+yLabel <- c("Total NMTC Investment")
+xLabel <- c("Year")
+
+g <- ggplot(nyZipCodeInvestment, aes(x = factor(year), y = totalInvestment)) +
+    stat_summary(fun.y = "sum", geom = "bar") +
+    facet_wrap(~zipcode, drop = FALSE) +
+    theme(panel.margin = unit(0.4, "lines")) +
+    scale_y_continuous(trans = sqrt_trans(),
+                       breaks = c(1e+06, 1e+07, 5 * 1e+07, 1e+08), 
+                       labels = c("$1M", "$10MM", "$50MM", "$100MM")) +
+    labs(title = title, x = xLabel, y = yLabel)
+
+# save plot
+path <- c("./nmtc_analysis_files/figure-html")
+filename <- c("NYC_Zipcode_Investment_History.png")
+ggsave(filename = filename,
+       plot = g,
+       path = path,
+       scale = 2, 
+       width = 7, 
+       height = 7, 
+       units = "in")
+
+```
+
+![Investment History in NYC Zipcodes](nmtc_analysis_files/figure-html/NYC_Zipcode_Investment_History.png)
 
 Most aggressive CDEs
 
