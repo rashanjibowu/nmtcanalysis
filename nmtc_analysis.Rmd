@@ -170,6 +170,14 @@ dt <- data.table(data)
 
 ```
 
+Update levels for recipient factor variable
+
+```{r update levels for investeeType}
+
+levels(dt$investeeType)[c(3:4)] <- c("Non-Real Estate", "Real Estate")
+
+```
+
 Add columns for analysis
 
 ```{r add columns}
@@ -297,7 +305,7 @@ g + geom_point() +
 
 Plot the average portion financed over time by purpose
 
-```{r avg portion financed over time}
+```{r avg portion financed over time by purpose}
 
 # Prepare plot parameters
 title <- c("Average Portion Financed By Year and Purpose")
@@ -313,6 +321,33 @@ avgPortionByYear <- dt[CDE != "Multi-CDE Project",
 g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
 g + geom_line() +
   facet_grid(purposeCategory~.) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_x_continuous(breaks = unique(avgPortionByYear$year)) +
+  labs(title = title, x = xLabel, y = yLabel) +
+  theme(axis.text.y = element_text(size = 8, color = "#000000"),
+        strip.text.y = element_text(size = 6.5),
+        panel.margin = unit(0.5, "lines"))
+
+```
+
+Plot average portion financed over time by investeeType
+
+```{r avg portion financed over time by investeeType}
+
+# Prepare plot parameters
+title <- c("Average Portion Financed By Year and Recipient")
+yLabel <- c("Average Portion Financed with NMTC Funding")
+xLabel <- c("Year")
+
+# average funded over time
+avgPortionByYear <- dt[investeeType != "", 
+                       list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)),
+                       by = c("year", "investeeType")]
+
+# Make the plot
+g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
+g + geom_line() +
+  facet_grid(investeeType~.) +
   scale_y_continuous(labels = percent_format()) +
   scale_x_continuous(breaks = unique(avgPortionByYear$year)) +
   labs(title = title, x = xLabel, y = yLabel) +
@@ -421,14 +456,6 @@ g + geom_point(size = 1.5) +
   scale_x_continuous(labels = percent_format()) +
   labs(title = title, x = xLabel, y = yLabel) +
   theme(axis.text.y = element_text(size = 7, color = "#000000"))
-
-```
-
-Update levels for recipient factor variable
-
-```{r update levels for investeeType}
-
-levels(dt$investeeType)[c(3:4)] <- c("Non-Real Estate", "Real Estate")
 
 ```
 

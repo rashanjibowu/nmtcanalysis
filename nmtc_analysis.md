@@ -158,6 +158,13 @@ Convert to data table for faster processing
 dt <- data.table(data)
 ```
 
+Update levels for recipient factor variable
+
+
+```r
+levels(dt$investeeType)[c(3:4)] <- c("Non-Real Estate", "Real Estate")
+```
+
 Add columns for analysis
 
 
@@ -312,7 +319,35 @@ g + geom_line() +
         panel.margin = unit(0.5, "lines"))
 ```
 
-![](nmtc_analysis_files/figure-html/avg portion financed over time-1.png) 
+![](nmtc_analysis_files/figure-html/avg portion financed over time by purpose-1.png) 
+
+Plot average portion financed over time by investeeType
+
+
+```r
+# Prepare plot parameters
+title <- c("Average Portion Financed By Year and Recipient")
+yLabel <- c("Average Portion Financed with NMTC Funding")
+xLabel <- c("Year")
+
+# average funded over time
+avgPortionByYear <- dt[investeeType != "", 
+                       list(avgPortionFinanced = mean(portionFinanced, na.rm = TRUE)),
+                       by = c("year", "investeeType")]
+
+# Make the plot
+g <- ggplot(avgPortionByYear, aes(x = year, y = avgPortionFinanced))
+g + geom_line() +
+  facet_grid(investeeType~.) +
+  scale_y_continuous(labels = percent_format()) +
+  scale_x_continuous(breaks = unique(avgPortionByYear$year)) +
+  labs(title = title, x = xLabel, y = yLabel) +
+  theme(axis.text.y = element_text(size = 8, color = "#000000"),
+        strip.text.y = element_text(size = 6.5),
+        panel.margin = unit(0.5, "lines"))
+```
+
+![](nmtc_analysis_files/figure-html/avg portion financed over time by investeeType-1.png) 
 
 Plot deal size against portion financed
 
@@ -419,13 +454,6 @@ g + geom_point(size = 1.5) +
 ```
 
 ![](nmtc_analysis_files/figure-html/CDE portion financed versus deal size-1.png) 
-
-Update levels for recipient factor variable
-
-
-```r
-levels(dt$investeeType)[c(3:4)] <- c("Non-Real Estate", "Real Estate")
-```
 
 Show distribution of investment size and portion financed by recipient
 
