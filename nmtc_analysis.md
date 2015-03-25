@@ -230,12 +230,19 @@ totalByYear <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)),
 title <- c("Annual NMTC Investment Volume")
 yLabel <- c("Total NMTC Investment")
 xLabel <- c("Year")
+labels <- c("$1 million", "$10 million", "$100 million", "$1 billion", "$10 billion")
 
-g <- ggplot(totalByYear, aes(y = totalInvestment, x = factor(year))) 
-g + geom_bar(stat = "identity") +   
+# make plot
+g <- ggplot(totalByYear, aes(y = totalInvestment, 
+                             x = factor(year), 
+                             fill = totalInvestment)) 
+
+g + scale_fill_gradient(low="darkkhaki", high="darkgreen") +
+    geom_bar(stat = "identity") +   
     scale_y_log10(breaks = c(1e+06, 1e+07, 1e+08, 1e+09, 1e+10),
-                  labels = c("$1 million", "$10 million", "$100 million", "$1 billion", "$10 billion")) + 
-    labs(title = title, x = xLabel, y = yLabel)
+                  labels = labels) + 
+    labs(title = title, x = xLabel, y = yLabel) +
+    coord_cartesian(ylim = c(1e+06, 1e+11)) 
 ```
 
 ![](nmtc_analysis_files/figure-html/annual investment volume-1.png) 
@@ -541,13 +548,18 @@ topCities$city <- toupper(topCities$city)
 breaks <- c(1e+05, 1e+06, 1e+07, 1e+08)
 limits <- c(1e+04, 1e+09)
 
-g <- ggplot(topCities, aes(y = totalInvestment, x = factor(year)))
-g + geom_bar(stat = "identity") +
-  scale_y_log10(breaks = breaks,
+g <- ggplot(topCities, aes(y = totalInvestment, 
+                           x = factor(year),
+                           fill = totalInvestment))
+
+g + scale_fill_gradient(low = "lightgoldenrod1", high = "darkgoldenrod1") +
+    geom_bar(stat = "identity", color = "darkgoldenrod1") +
+    scale_y_log10(breaks = breaks,
                 labels = c("$100K", "$1 million", "$10 million", "$100 million")) +                
-  facet_grid(city~.) +
-  labs(title = title, x = xLabel, y = yLabel) +  
-  coord_cartesian(ylim=limits)
+    facet_grid(city~.) +
+    labs(title = title, x = xLabel, y = yLabel) +  
+    coord_cartesian(ylim=limits) + 
+    theme(legend.position = "none")
 ```
 
 ![](nmtc_analysis_files/figure-html/top city investment history-1.png) 
