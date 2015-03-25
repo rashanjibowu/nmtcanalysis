@@ -211,7 +211,16 @@ dt[indicies, "purposeCategory"] <- c("Other")
 dt$purposeCategory <- as.factor(dt$purposeCategory)
 ```
 
+Annual Investment Volume
 
+
+```
+## Warning in gsum(investment, na.rm = TRUE): Group 2 summed to more than
+## type 'integer' can hold so the result has been coerced to 'numeric'
+## automatically, for convenience.
+```
+
+![](nmtc_analysis_files/figure-html/annual investment volume-1.png) 
 
 Find and plot the ten most active CDFIs overall
 

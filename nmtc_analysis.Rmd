@@ -217,22 +217,24 @@ dt$purposeCategory <- as.factor(dt$purposeCategory)
 
 ```
 
+Annual Investment Volume
+
 ```{r annual investment volume, echo = FALSE}
-#Annual Investment Volume
+
 # form the data
-#totalByYear <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), 
-#                by = c("year")]
+totalByYear <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                by = c("year")]
 
 # Prepare plot parameters
-#title <- c("Annual NMTC Investment Volume")
-#yLabel <- c("Total NMTC Investment")
-#xLabel <- c("Year")
+title <- c("Annual NMTC Investment Volume")
+yLabel <- c("Total NMTC Investment")
+xLabel <- c("Year")
 
-#g <- ggplot(totalByYear, aes(y = totalInvestment, x = factor(year))) 
-#g + geom_bar(stat = "identity") +   
- #   scale_y_log10(breaks = c(1e+06, 1e+07, 1e+08, 1e+09, 1e+10),
-#                  labels = c("$1 million", "$10 million", "$100 million", "$1 billion", "$10 billion")) + 
- #   labs(title = title, x = xLabel, y = yLabel)
+g <- ggplot(totalByYear, aes(y = totalInvestment, x = factor(year))) 
+g + geom_bar(stat = "identity") +   
+    scale_y_log10(breaks = c(1e+06, 1e+07, 1e+08, 1e+09, 1e+10),
+                  labels = c("$1 million", "$10 million", "$100 million", "$1 billion", "$10 billion")) + 
+    labs(title = title, x = xLabel, y = yLabel)
 
 ```
 
