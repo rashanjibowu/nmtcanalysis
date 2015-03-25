@@ -11,7 +11,7 @@ Set global options
 
 ```{r globaloptions }
 
-knitr::opts_chunk$set(cache = TRUE, fig.width=7, fig.height=7, collapse = TRUE)
+knitr::opts_chunk$set(cache = FALSE, fig.width=7, fig.height=7, collapse = TRUE)
 
 ```
 
@@ -65,7 +65,14 @@ Convert certain variables into factors
 ```{r factorize certain variables}
 
 data$investeeType <- as.factor(data$investeeType)
-#data$year <- as.factor(data$year)
+
+```
+
+Convert investment variable to numeric format
+
+```{r convert investment variable to numeric}
+
+data$investment <- as.numeric(data$investment)
 
 ```
 
@@ -160,7 +167,6 @@ indices <- grep("wilmington", data$city)
 data[indices, c("city")] <- c("wilmington")
 
 # merge boroughs of NY
-
 indices <- grep("^(bronx|brooklyn)$", data$city)
 data[indices, c("city")] <- c("new york")
 
@@ -219,7 +225,7 @@ dt$purposeCategory <- as.factor(dt$purposeCategory)
 
 Annual Investment Volume
 
-```{r annual investment volume, echo = FALSE}
+```{r annual investment volume}
 
 # form the data
 totalByYear <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), 
@@ -500,7 +506,7 @@ ggsave(filename = filename,
 
 Investment History in Top Cities
 
-```{r top city investment history, echo = FALSE}
+```{r top city investment history}
 
 # Prepare plot parameters
 title <- c("NMTC Investment History in Top Cities")
@@ -513,12 +519,20 @@ topCities <- dt[(city %in% cities & year != c("2012")),
                 list(totalInvestment = sum(investment, na.rm = TRUE)), 
                 by = c("year", "city")]
 
+# Fix presentation of city names
+topCities$city <- toupper(topCities$city)
+
+# fix scale for plot
+breaks <- c(1e+05, 1e+06, 1e+07, 1e+08)
+limits <- c(1e+04, 1e+09)
+
 g <- ggplot(topCities, aes(y = totalInvestment, x = factor(year)))
 g + geom_bar(stat = "identity") +
-  scale_y_log10(breaks = c(1e+05, 1e+06, 1e+07, 1e+08), 
-                labels = c("$100K", "$1 million", "$10 million", "$100 million")) +
+  scale_y_log10(breaks = breaks,
+                labels = c("$100K", "$1 million", "$10 million", "$100 million")) +                
   facet_grid(city~.) +
-  labs(title = title, x = xLabel, y = yLabel)
+  labs(title = title, x = xLabel, y = yLabel) +  
+  coord_cartesian(ylim=limits)
 
 ```
 

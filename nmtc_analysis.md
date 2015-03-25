@@ -6,7 +6,7 @@ Set global options
 
 
 ```r
-knitr::opts_chunk$set(cache = TRUE, fig.width=7, fig.height=7, collapse = TRUE)
+knitr::opts_chunk$set(cache = FALSE, fig.width=7, fig.height=7, collapse = TRUE)
 ```
 
 Load necessary libraries
@@ -60,7 +60,14 @@ Convert certain variables into factors
 ```r
 
 data$investeeType <- as.factor(data$investeeType)
-#data$year <- as.factor(data$year)
+```
+
+Convert investment variable to numeric format
+
+
+```r
+
+data$investment <- as.numeric(data$investment)
 ```
 
 Clean up city names
@@ -155,7 +162,6 @@ indices <- grep("wilmington", data$city)
 data[indices, c("city")] <- c("wilmington")
 
 # merge boroughs of NY
-
 indices <- grep("^(bronx|brooklyn)$", data$city)
 data[indices, c("city")] <- c("new york")
 
@@ -214,10 +220,22 @@ dt$purposeCategory <- as.factor(dt$purposeCategory)
 Annual Investment Volume
 
 
-```
-## Warning in gsum(investment, na.rm = TRUE): Group 2 summed to more than
-## type 'integer' can hold so the result has been coerced to 'numeric'
-## automatically, for convenience.
+```r
+
+# form the data
+totalByYear <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                by = c("year")]
+
+# Prepare plot parameters
+title <- c("Annual NMTC Investment Volume")
+yLabel <- c("Total NMTC Investment")
+xLabel <- c("Year")
+
+g <- ggplot(totalByYear, aes(y = totalInvestment, x = factor(year))) 
+g + geom_bar(stat = "identity") +   
+    scale_y_log10(breaks = c(1e+06, 1e+07, 1e+08, 1e+09, 1e+10),
+                  labels = c("$1 million", "$10 million", "$100 million", "$1 billion", "$10 billion")) + 
+    labs(title = title, x = xLabel, y = yLabel)
 ```
 
 ![](nmtc_analysis_files/figure-html/annual investment volume-1.png) 
@@ -501,6 +519,36 @@ ggsave(filename = filename,
 ![Investment History in NYC Zipcodes](nmtc_analysis_files/figure-html/NYC_Zipcode_Investment_History.png)
 
 Investment History in Top Cities
+
+
+```r
+
+# Prepare plot parameters
+title <- c("NMTC Investment History in Top Cities")
+yLabel <- c("Total NMTC Investment")
+xLabel <- c("Year")
+
+cities <- c("new york", "new orleans", "chicago", "los angeles", "washington dc")
+
+topCities <- dt[(city %in% cities & year != c("2012")), 
+                list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                by = c("year", "city")]
+
+# Fix presentation of city names
+topCities$city <- toupper(topCities$city)
+
+# fix scale for plot
+breaks <- c(1e+05, 1e+06, 1e+07, 1e+08)
+limits <- c(1e+04, 1e+09)
+
+g <- ggplot(topCities, aes(y = totalInvestment, x = factor(year)))
+g + geom_bar(stat = "identity") +
+  scale_y_log10(breaks = breaks,
+                labels = c("$100K", "$1 million", "$10 million", "$100 million")) +                
+  facet_grid(city~.) +
+  labs(title = title, x = xLabel, y = yLabel) +  
+  coord_cartesian(ylim=limits)
+```
 
 ![](nmtc_analysis_files/figure-html/top city investment history-1.png) 
 
