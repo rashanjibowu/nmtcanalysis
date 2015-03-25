@@ -500,7 +500,9 @@ ggsave(filename = filename,
 
 ![Investment History in NYC Zipcodes](nmtc_analysis_files/figure-html/NYC_Zipcode_Investment_History.png)
 
+Investment History in Top Cities
 
+![](nmtc_analysis_files/figure-html/top city investment history-1.png) 
 
 Most aggressive CDEs
 
