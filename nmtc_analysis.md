@@ -2,10 +2,18 @@
 Rashan Jibowu  
 03/24/2015  
 
+Set global options
+
+
+```r
+knitr::opts_chunk$set(cache = TRUE, fig.width=7, fig.height=7, collapse = TRUE)
+```
+
 Load necessary libraries
 
 
 ```r
+
 library(data.table)
 library(ggplot2)
 library(scales)
@@ -16,6 +24,7 @@ Load the data
 
 
 ```r
+
 data <- read.csv("./data/projects.csv", na.strings = NA)
 
 downloadData <- c(FALSE)
@@ -33,6 +42,7 @@ Clean up column names
 
 
 ```r
+
 colnames(data) <- c("projectID", "metroStatus", "year", "CDE", "investment", "projectCost", "city", "state", "zipcode", "purpose", "investeeType", "multiCDEStatus", "multiTractStatus")
 ```
 
@@ -40,6 +50,7 @@ Clean up California data
 
 
 ```r
+
 data[data$state == "Ca",]["state"] <- c("CA")
 ```
 
@@ -47,6 +58,7 @@ Convert certain variables into factors
 
 
 ```r
+
 data$investeeType <- as.factor(data$investeeType)
 #data$year <- as.factor(data$year)
 ```
@@ -55,6 +67,7 @@ Clean up city names
 
 
 ```r
+
 data$city <- tolower(data$city)
 
 indices <- grep("chicago,", data$city)
@@ -156,6 +169,7 @@ Convert to data table for faster processing
 
 
 ```r
+
 dt <- data.table(data)
 ```
 
@@ -163,6 +177,7 @@ Update levels for recipient factor variable
 
 
 ```r
+
 levels(dt$investeeType)[c(3:4)] <- c("Non-Real Estate", "Real Estate")
 ```
 
@@ -170,6 +185,7 @@ Add columns for analysis
 
 
 ```r
+
 # portion financed
 dt <- dt[, portionFinanced:=investment/projectCost]
 
@@ -195,10 +211,13 @@ dt[indicies, "purposeCategory"] <- c("Other")
 dt$purposeCategory <- as.factor(dt$purposeCategory)
 ```
 
+
+
 Find and plot the ten most active CDFIs overall
 
 
 ```r
+
 totalInvestedByCDE <- suppressWarnings(dt[, 
                                           list(totalInvestment = sum(investment)), 
                                           by = c("CDE")])
@@ -226,6 +245,7 @@ Find and plot the most active CDFIs in NY
 
 
 ```r
+
 # Filter for projects in NY only and exclude multi-CDE projects
 nyInvestors <- dt[(state == "NY" & CDE != "Multi-CDE Project"), 
                   list(totalInvestment = sum(investment, na.rm = TRUE)), 
@@ -253,6 +273,7 @@ Find and plot average capital deployed per state
 
 
 ```r
+
 title <- c("Average Invested Per Deal in Each State")
 xLabel <- c("Average Invested Per Deal (millions)")
 yLabel <- c("State")
@@ -275,6 +296,7 @@ Find average portion of projects financed with NMTC dollars
 
 
 ```r
+
 title <- c("Average Portion Financed By State")
 xLabel <- c("Average Portion Financed with NMTC Funding")
 yLabel <- c("State")
@@ -298,6 +320,7 @@ Plot the average portion financed over time by purpose
 
 
 ```r
+
 # Prepare plot parameters
 title <- c("Average Portion Financed By Year and Purpose")
 yLabel <- c("Average Portion Financed with NMTC Funding")
@@ -326,6 +349,7 @@ Plot average portion financed over time by investeeType
 
 
 ```r
+
 # Prepare plot parameters
 title <- c("Average Portion Financed By Year and Recipient")
 yLabel <- c("Average Portion Financed with NMTC Funding")
@@ -354,6 +378,7 @@ Plot deal size against portion financed
 
 
 ```r
+
 # Prepare plot parameters
 title <- c("Investment Size vs. Portion Financed By Multi-CDE Status")
 yLabel <- c("NMTC Investment Size")
@@ -381,6 +406,7 @@ Separate plot into facets for clarity
 
 
 ```r
+
 # make plot
 g <- ggplot(dt, 
             aes(x = portionFinanced, y = investment, color = multiCDEStatus))
@@ -402,6 +428,7 @@ Cities with the greatest investment
 
 
 ```r
+
 # form the data
 investmentByCity <- dt[,
                        list(totalInvestment = sum(investment, na.rm = TRUE)), 
@@ -430,6 +457,7 @@ Zipcodes in NY - investment history
 
 
 ```r
+
 # form data
 nyZipCodeInvestment <- dt[(city == c("new york")), 
                           list(totalInvestment = sum(investment, na.rm = TRUE)), 
@@ -463,10 +491,13 @@ ggsave(filename = filename,
 
 ![Investment History in NYC Zipcodes](nmtc_analysis_files/figure-html/NYC_Zipcode_Investment_History.png)
 
+
+
 Most aggressive CDEs
 
 
 ```r
+
 # form the data
 avgPortionTotalByCDE <- dt[CDE != "Multi-CDE Project", 
                            list(avgPortion = mean(portionFinanced, na.rm = TRUE), 
@@ -497,6 +528,7 @@ Show distribution of investment size and portion financed by recipient
 
 
 ```r
+
 # Prepare plot parameters
 title <- c("Investment Size vs. Portion Financed By Recipient")
 yLabel <- c("NMTC Investment Size")
@@ -526,6 +558,7 @@ Separate plot into facets for greater clarity
 
 
 ```r
+
 # make faceted plot - filter out blank investeeTypes
 g <- ggplot(dt[investeeType != "",], 
             aes(x = portionFinanced, y = investment, color = investeeType))
