@@ -6,7 +6,7 @@ Set global options
 
 
 ```r
-knitr::opts_chunk$set(cache = FALSE, fig.width=7, fig.height=7, collapse = TRUE)
+knitr::opts_chunk$set(cache = FALSE, fig.width = 7, fig.height = 7, collapse = TRUE)
 ```
 
 Load necessary libraries
@@ -223,8 +223,9 @@ Annual Investment Volume
 ```r
 
 # form the data
-totalByYear <- dt[,list(totalInvestment = sum(investment, na.rm = TRUE)), 
-                by = c("year")]
+totalByYear <- dt[,
+                  list(totalInvestment = sum(investment, na.rm = TRUE)), 
+                  by = c("year")]
 
 # Prepare plot parameters
 title <- c("Annual NMTC Investment Volume")
@@ -237,7 +238,7 @@ g <- ggplot(totalByYear, aes(y = totalInvestment + 1,
                              x = factor(year), 
                              fill = totalInvestment)) 
 
-g + scale_fill_gradient(low="darkkhaki", high="darkgreen") +
+g + scale_fill_gradient(low = "darkkhaki", high = "darkgreen") +
     geom_bar(stat = "identity") +   
     scale_y_log10(breaks = c(1e+06, 1e+07, 1e+08, 1e+09, 1e+10),
                   labels = labels) + 
@@ -427,7 +428,7 @@ g <- ggplot(dt,
 
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
-  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  geom_line(stat = "hline", yintercept = "mean", linetype = "twodash", size = 1) +   
   labs(title = title, x = xLabel, y = yLabel) +
   scale_x_continuous(labels = percent_format()) +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
@@ -447,7 +448,7 @@ g <- ggplot(dt,
 
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
-  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  geom_line(stat = "hline", yintercept = "mean", linetype = "twodash", size = 1) +   
   labs(title = title, x = xLabel, y = yLabel) +
   scale_x_continuous(labels = percent_format()) +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
@@ -616,7 +617,7 @@ g + geom_point(alpha = 0.4, size = 1) +
   scale_color_brewer(type = "qual", 
                      palette = 6, 
                      name = "Recipient") + 
-  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  geom_line(stat = "hline", yintercept = "mean", linetype = "twodash", size = 1) +   
   labs(title = title, x = xLabel, y = yLabel) +
   scale_x_continuous(labels = percent_format()) +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
@@ -635,9 +636,8 @@ g <- ggplot(dt[investeeType != "",],
             aes(x = portionFinanced, y = investment + 1, color = investeeType))
 
 g + geom_point(alpha = 0.4, size = 1) +   
-  scale_color_brewer(type = "qual", 
-                     palette = 6) + 
-  geom_line(stat = "hline", yintercept = "mean", linetype="twodash", size = 1) +   
+  scale_color_brewer(type = "qual", palette = 6) + 
+  geom_line(stat = "hline", yintercept = "mean", linetype = "twodash", size = 1) +   
   labs(title = title, x = xLabel, y = yLabel) +
   scale_x_continuous(labels = percent_format()) +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
