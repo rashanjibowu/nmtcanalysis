@@ -238,7 +238,7 @@ xLabel <- c("Year")
 labels <- c("$1 million", "$10 million", "$100 million", "$1 billion", "$10 billion")
 
 # make plot
-g <- ggplot(totalByYear, aes(y = totalInvestment, 
+g <- ggplot(totalByYear, aes(y = totalInvestment + 1, 
                              x = factor(year), 
                              fill = totalInvestment)) 
 
@@ -414,7 +414,7 @@ yAxisLabels <- c("$1,000", "$10,000", "$100,000", "$1 million", "$10 million", "
 
 # make plot
 g <- ggplot(dt, 
-            aes(x = portionFinanced, y = investment, color = multiCDEStatus))
+            aes(x = portionFinanced, y = investment + 1, color = multiCDEStatus))
 
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
@@ -432,7 +432,7 @@ Separate plot into facets for clarity
 
 # make plot
 g <- ggplot(dt, 
-            aes(x = portionFinanced, y = investment, color = multiCDEStatus))
+            aes(x = portionFinanced, y = investment + 1, color = multiCDEStatus))
 
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", palette = 2, name = "Multi-CDE Project") +
@@ -533,7 +533,7 @@ topCities$city <- toupper(topCities$city)
 breaks <- c(1e+05, 1e+06, 1e+07, 1e+08)
 limits <- c(1e+04, 1e+09)
 
-g <- ggplot(topCities, aes(y = totalInvestment, 
+g <- ggplot(topCities, aes(y = totalInvestment + 1, 
                            x = factor(year),
                            fill = totalInvestment))
 
@@ -591,7 +591,7 @@ yAxisLabels <- c("$1,000", "$10,000", "$100,000", "$1 million", "$10 million", "
 
 # make plot - filter out blank investeeTypes
 g <- ggplot(dt[investeeType != "",], 
-            aes(x = portionFinanced, y = investment, color = investeeType))
+            aes(x = portionFinanced, y = investment + 1, color = investeeType))
 
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", 
@@ -611,7 +611,7 @@ Separate plot into facets for greater clarity
 
 # make faceted plot - filter out blank investeeTypes
 g <- ggplot(dt[investeeType != "",], 
-            aes(x = portionFinanced, y = investment, color = investeeType))
+            aes(x = portionFinanced, y = investment + 1, color = investeeType))
 
 g + geom_point(alpha = 0.4, size = 1) +   
   scale_color_brewer(type = "qual", 
