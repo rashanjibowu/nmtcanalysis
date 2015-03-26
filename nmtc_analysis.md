@@ -647,3 +647,25 @@ g + geom_point(alpha = 0.4, size = 1) +
 ```
 
 ![](nmtc_analysis_files/figure-html/faceted investeeType plot-1.png) 
+
+Investment Size by Recipient using a boxplot
+
+
+```r
+
+# Prepare plot parameters
+title <- c("Distribution of Investment Sizes Per Deal By Recipient")
+yLabel <- c("NMTC Investment Size Per Deal")
+xLabel <- c("Recipient")
+
+breaks <- c(1e+06, 1e+07, 2.5e+07, 5e+07, 7.5e+07, 1e+08, 1.25e+08, 1.5e+08)
+labels <- c("$1 million", "$10 million", "$25 million", "$50 million", "$75 million", "$100 million", "$125 million", "$150 million")
+
+g <- ggplot(dt[investeeType != "",],
+            aes(x = investeeType, y = investment))
+g + geom_boxplot() + 
+  labs(title = title, x = xLabel, y = yLabel) +
+  scale_y_continuous(breaks = breaks, labels = labels)
+```
+
+![](nmtc_analysis_files/figure-html/investment size by recipient-1.png) 
