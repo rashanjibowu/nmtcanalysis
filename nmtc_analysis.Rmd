@@ -44,6 +44,35 @@ if (downloadData) {
 
 ```
 
+Zipcode data
+
+```{r zipcode data, cache=TRUE}
+
+# download zip code data if it doesn't already exist
+zipcode.path <- c("./data/zipcode.csv")
+
+if (!file.exists(zipcode.path)) {
+    zipcodeURL <- c("http://www.boutell.com/zipcodes/zipcode.zip")
+    download.file(zipcodeURL, destfile = "./data/zipcode.zip", method = "curl")
+    unzip("./data/zipcode.zip", exdir = "./data/")    
+}
+
+# read in zipcode data
+zipcodeData <- read.csv(zipcode.path, colClasses = c("character"))
+    
+# clean zipcode data
+zipcodeData$zip <- as.factor(zipcodeData$zip)
+zipcodeData$city <- as.factor(zipcodeData$city)
+zipcodeData$state <- as.factor(zipcodeData$state)
+zipcodeData$latitude <- as.numeric(zipcodeData$latitude)
+zipcodeData$longitude <- as.numeric(zipcodeData$longitude)
+zipcodeData$timezone <- as.integer(zipcodeData$timezone)
+zipcodeData$dst <- as.integer(zipcodeData$dst)  
+
+str(zipcodeData)
+
+```
+
 Clean up column names
 
 ```{r clean data}

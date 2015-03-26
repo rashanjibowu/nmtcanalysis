@@ -38,6 +38,43 @@ if (downloadData) {
 }
 ```
 
+Zipcode data
+
+
+```r
+
+# download zip code data if it doesn't already exist
+zipcode.path <- c("./data/zipcode.csv")
+
+if(!file.exists(zipcode.path)) {
+    zipcodeURL <- c("http://www.boutell.com/zipcodes/zipcode.zip")
+    download.file(zipcodeURL, destfile = "./data/zipcode.zip", method = "curl")
+    unzip("./data/zipcode.zip", exdir = "./data/")    
+}
+
+# read in zipcode data
+zipcodeData <- read.csv(zipcode.path, colClasses = c("character"))
+    
+# clean zipcode data
+zipcodeData$zip <- as.factor(zipcodeData$zip)
+zipcodeData$city <- as.factor(zipcodeData$city)
+zipcodeData$state <- as.factor(zipcodeData$state)
+zipcodeData$latitude <- as.double(zipcodeData$latitude)
+zipcodeData$longitude <- as.numeric(zipcodeData$longitude)
+zipcodeData$timezone <- as.integer(zipcodeData$timezone)
+zipcodeData$dst <- as.integer(zipcodeData$dst)  
+
+str(zipcodeData)
+## 'data.frame':	43191 obs. of  7 variables:
+##  $ zip      : Factor w/ 43191 levels "00210","00211",..: 1 2 3 4 5 6 7 8 9 10 ...
+##  $ city     : Factor w/ 19053 levels "Aaronsburg","Abbeville",..: 13674 13674 13674 13674 13674 13674 7642 7642 73 93 ...
+##  $ state    : Factor w/ 54 levels "AK","AL","AR",..: 32 32 32 32 32 32 36 36 41 41 ...
+##  $ latitude : num  43 43 43 43 43 ...
+##  $ longitude: num  -71 -71 -71 -71 -71 ...
+##  $ timezone : int  -5 -5 -5 -5 -5 -5 -5 -5 -4 -4 ...
+##  $ dst      : int  1 1 1 1 1 1 1 1 0 0 ...
+```
+
 Clean up column names
 
 

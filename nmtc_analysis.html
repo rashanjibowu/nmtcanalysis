@@ -89,6 +89,38 @@ if (downloadData) {
   old &lt;- read.csv(&quot;./data/first1996.csv&quot;, na.strings = NA)
   head(old)
 }</code></pre>
+<p>Zipcode data</p>
+<pre class="r"><code>
+# download zip code data if it doesn't already exist
+zipcode.path &lt;- c(&quot;./data/zipcode.csv&quot;)
+
+if(!file.exists(zipcode.path)) {
+    zipcodeURL &lt;- c(&quot;http://www.boutell.com/zipcodes/zipcode.zip&quot;)
+    download.file(zipcodeURL, destfile = &quot;./data/zipcode.zip&quot;, method = &quot;curl&quot;)
+    unzip(&quot;./data/zipcode.zip&quot;, exdir = &quot;./data/&quot;)    
+}
+
+# read in zipcode data
+zipcodeData &lt;- read.csv(zipcode.path, colClasses = c(&quot;character&quot;))
+    
+# clean zipcode data
+zipcodeData$zip &lt;- as.factor(zipcodeData$zip)
+zipcodeData$city &lt;- as.factor(zipcodeData$city)
+zipcodeData$state &lt;- as.factor(zipcodeData$state)
+zipcodeData$latitude &lt;- as.double(zipcodeData$latitude)
+zipcodeData$longitude &lt;- as.numeric(zipcodeData$longitude)
+zipcodeData$timezone &lt;- as.integer(zipcodeData$timezone)
+zipcodeData$dst &lt;- as.integer(zipcodeData$dst)  
+
+str(zipcodeData)
+## 'data.frame':    43191 obs. of  7 variables:
+##  $ zip      : Factor w/ 43191 levels &quot;00210&quot;,&quot;00211&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
+##  $ city     : Factor w/ 19053 levels &quot;Aaronsburg&quot;,&quot;Abbeville&quot;,..: 13674 13674 13674 13674 13674 13674 7642 7642 73 93 ...
+##  $ state    : Factor w/ 54 levels &quot;AK&quot;,&quot;AL&quot;,&quot;AR&quot;,..: 32 32 32 32 32 32 36 36 41 41 ...
+##  $ latitude : num  43 43 43 43 43 ...
+##  $ longitude: num  -71 -71 -71 -71 -71 ...
+##  $ timezone : int  -5 -5 -5 -5 -5 -5 -5 -5 -4 -4 ...
+##  $ dst      : int  1 1 1 1 1 1 1 1 0 0 ...</code></pre>
 <p>Clean up column names</p>
 <pre class="r"><code>
 colnames(data) &lt;- c(&quot;projectID&quot;, &quot;metroStatus&quot;, &quot;year&quot;, &quot;CDE&quot;, &quot;investment&quot;, &quot;projectCost&quot;, &quot;city&quot;, &quot;state&quot;, &quot;zipcode&quot;, &quot;purpose&quot;, &quot;investeeType&quot;, &quot;multiCDEStatus&quot;, &quot;multiTractStatus&quot;)</code></pre>

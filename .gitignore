@@ -6,3 +6,4 @@ nmtc_analysis_cache
 
 # Rhistory
 .Rhistory
+*.Rproj*
