@@ -26,7 +26,7 @@ library(grid)
 
 ```
 
-Load the data
+Load the NMTC project data
 
 ```{r read in data}
 
@@ -69,7 +69,58 @@ zipcodeData$longitude <- as.numeric(zipcodeData$longitude)
 zipcodeData$timezone <- as.integer(zipcodeData$timezone)
 zipcodeData$dst <- as.integer(zipcodeData$dst)  
 
-str(zipcodeData)
+# convert data frame to data.table for faster processing
+zipcodes <- data.table(zipcodeData)
+
+str(zipcodes)
+
+```
+
+Unemployment By Zipcode
+
+```{r employment by zipcode data}
+
+url <- c("https://s3.amazonaws.com/SplitwiseBlogJB/Unemployment+Unsorted.csv")
+unemploymentByZipcode.path <- c("./data/unemploymentByZipcode.csv")
+
+if (!file.exists(unemploymentByZipcode.path)) {
+    download.file(url, destfile = unemploymentByZipcode.path, method = "curl")
+}
+
+uBZ <- read.csv(unemploymentByZipcode.path, colClasses = c("character"))
+
+str(uBZ)
+
+```
+
+Translate zipcodes into county and census tract  
+*Files are located at the **[Census website](https://www.census.gov/geo/maps-data/data/zcta_rel_download.html)***
+
+```{r translate zipcodes}
+
+dataDir <- c("./data/")
+
+zip2census.path <- paste0(dataDir, c("zip2census.txt"))
+zip2county.path <- paste0(dataDir, c("zip2county.txt"))
+
+# convert to county
+if (!file.exists(zip2county.path)) {
+    zip2countyURL <- c("http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_county_rel_10.txt")
+    download.file(zip2countyURL, destfile = zip2county.path, method = "curl")
+}
+
+zip2county <- data.table(read.csv(zip2county.path))
+
+# convert to census tract
+if (!file.exists(zip2census.path)) {    
+    zip2censusURL <- c("http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_tract_rel_10.txt")
+    download.file(zip2censusURL, destfile = zip2census.path, method = "curl")    
+}
+
+zip2census <- data.table(read.csv(zip2census.path))
+
+str(zip2county)
+str(zip2census)
 
 ```
 

@@ -7,3 +7,4 @@ nmtc_analysis_cache
 # Rhistory
 .Rhistory
 *.Rproj*
+.Rproj.user
